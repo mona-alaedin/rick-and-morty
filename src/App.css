@@ -234,3 +234,10 @@
     flex-direction: row;
   }
 }
+
+.loader {
+  color: #b9b9b9b0;
+  text-align: center;
+  margin-top: 10rem;
+  font-size: 2rem;
+}
