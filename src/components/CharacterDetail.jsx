@@ -1,12 +1,11 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
 import { ArrowUpCircleIcon } from "@heroicons/react/20/solid";
-import axios from "axios";
-import { episodes } from "./../../data/data";
 import Loader from "./Loader";
 import toast from "react-hot-toast";
+import axios from "axios";
 
-function CharacterDetail({ selectedId }) {
+function CharacterDetail({ selectedId, onAddFavorite, isAddToFavorite }) {
   const [character, setCharacter] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [episodes, setEpisodes] = useState([]);
@@ -77,7 +76,15 @@ function CharacterDetail({ selectedId }) {
             <p>{character.location.name}</p>
           </div>
           <div className="actions">
-            <button className="btn btn--primary">Add to Favorite</button>
+            {isAddToFavorite ? (
+              <p>Already Added To Favorite ✅</p>
+            ) : (
+              <button
+                onClick={() => onAddFavorite(character)}
+                className="btn btn--primary">
+                Add to Favorite
+              </button>
+            )}
           </div>
         </div>
       </div>
