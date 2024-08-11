@@ -11,8 +11,9 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [query, setQuery] = useState("");
   const [selectedId, setSelectedId] = useState(null);
-  const [favorites, setFavorites] = useState([]);
-  // const [count, setCount] = useState(0);
+  const [favorites, setFavorites] = useState(
+    () => JSON.parse(localStorage.getItem("FAVORITES")) || []
+  );
 
   useEffect(() => {
     const controller = new AbortController();
@@ -36,17 +37,15 @@ function App() {
       }
     }
 
-    // if (query.length < 3) {
-    //   setCharacters([]);
-    //   return;
-    // }
-
     fetchData();
 
     return () => {
       controller.abort();
     };
   }, [query]);
+  useEffect(() => {
+    localStorage.setItem("FAVORITES", JSON.stringify(favorites));
+  }, [favorites]);
 
   const handleSelectCharacter = (id) => {
     setSelectedId((prevId) => (prevId === id ? null : id));
@@ -56,23 +55,22 @@ function App() {
     setFavorites((prevFav) => [...prevFav, character]);
   };
 
-  const isAddToFavorite = favorites.map((fav) => fav.id).includes(selectedId);
+  const handleRemoveFavorite = (id) => {
+    setFavorites((prevFav) => prevFav.filter((fav) => fav.id !== id));
+  };
 
-  // useEffect(() => {
-  //   const intervalId = setInterval(() => setCount((c) => c + 1), 1000);
-  //   return () => {
-  //     clearInterval(intervalId);
-  //   };
-  // }, [count]);
+  const isAddToFavorite = favorites.map((fav) => fav.id).includes(selectedId);
 
   return (
     <div className="app">
       <Toaster />
-      {/* <div style={{ color: "ffff" }}>{count}</div> */}
       <Navbar>
         <Search query={query} setQuery={setQuery} />
         <SearchResult numOfResult={characters.length} />
-        <Favorites numOfFavorites={favorites.length} />
+        <Favorites
+          favorites={favorites}
+          onDeleteFavorite={handleRemoveFavorite}
+        />
       </Navbar>
       <Main characters={characters}>
         <CharacterList
